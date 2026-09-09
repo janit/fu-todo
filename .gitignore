@@ -1,0 +1,5 @@
+data/
+dist/
+.output/
+.fu/
+node_modules/

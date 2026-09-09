@@ -1,0 +1,16 @@
+services:
+  fu-todo:
+    build: .
+    image: fu-todo
+    ports:
+      - "1337:1337"
+    volumes:
+      # Named volume, so the SQLite database outlives the container.
+      - fu-todo-data:/data
+    environment:
+      TODO_DB: /data/todos.db
+      PORT: "1337"
+    restart: unless-stopped
+
+volumes:
+  fu-todo-data:

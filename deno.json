@@ -1,0 +1,25 @@
+{
+  "version": "0.0.1",
+  "license": "MIT",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "npm:preact@^11.0.0-rc.1",
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
+  },
+  "imports": {
+    "@janit/fu": "jsr:@janit/fu@^0.0.1",
+    "preact": "npm:preact@^11.0.0-rc.1",
+    "@preact/signals": "npm:@preact/signals@^2.11.2"
+  },
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir=manual jsr:@janit/fu/cli dev .",
+    "build": "deno run -A --node-modules-dir=manual jsr:@janit/fu/cli build .",
+    "start": "PORT=1337 deno run -A .output/server/index.mjs"
+  },
+  "nodeModulesDir": "manual"
+}

@@ -1,0 +1,3 @@
+# Everything except the build output: the image packages .output only.
+*
+!.output
