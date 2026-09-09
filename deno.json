@@ -1,5 +1,5 @@
 {
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "compilerOptions": {
     "jsx": "react-jsx",
@@ -12,13 +12,13 @@
     ]
   },
   "imports": {
-    "@janit/fu": "npm:@janit/fu@^0.0.2",
+    "@janit/fu": "npm:@janit/fu@^0.0.4",
     "preact": "npm:preact@^11.0.0-rc.1",
     "@preact/signals": "npm:@preact/signals@^2.11.2"
   },
   "tasks": {
-    "dev": "deno run -A npm:@janit/fu@^0.0.2/cli dev .",
-    "build": "deno run -A npm:@janit/fu@^0.0.2/cli build .",
+    "dev": "deno run -A npm:@janit/fu@^0.0.4/cli dev .",
+    "build": "deno run -A npm:@janit/fu@^0.0.4/cli build .",
     "start": "PORT=1337 deno run -A .output/server/index.mjs"
   },
   "nodeModulesDir": "auto"
