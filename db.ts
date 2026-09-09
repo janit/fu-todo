@@ -90,9 +90,9 @@ export function toggleTodo(id: number): Todo | null {
 }
 
 export function deleteTodo(id: number): boolean {
-  return db.prepare("DELETE FROM todos WHERE id = ?").run(id).changes > 0;
+  return Number(db.prepare("DELETE FROM todos WHERE id = ?").run(id).changes) > 0;
 }
 
 export function clearDone(): number {
-  return db.prepare("DELETE FROM todos WHERE done = 1").run().changes;
+  return Number(db.prepare("DELETE FROM todos WHERE done = 1").run().changes);
 }

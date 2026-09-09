@@ -7,7 +7,9 @@ export default function ErrorPage(ctx: PageContext<State>) {
     <section>
       <h2 id="error-status">{status}</h2>
       <p id="error-message">{message}</p>
-      <p><a href="/">Back to the list</a></p>
+      <p>
+        <a href="/">Back to the list</a>
+      </p>
     </section>
   );
 }
