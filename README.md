@@ -61,6 +61,17 @@ default component never render; every handler returns a `Response`.
 **CSS Modules** (`islands/todo.module.css`) — scoped class names with native
 nesting and `color-mix`, compiled by lightningcss.
 
+## Runtimes
+
+The build output is portable, and so is the app: it runs on Deno, Node and Bun.
+Nitro picks its preset from whatever builds it, so build under Node — or set
+`NITRO_PRESET=node-server` — for an artefact that runs on all three.
+
+```sh
+NITRO_PRESET=node-server deno task build
+node .output/server/index.mjs   # or: bun / deno run -A
+```
+
 ## Storage
 
 `db.ts` uses `node:sqlite`, which is built into Deno and Node 22+ — no
