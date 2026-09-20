@@ -24,7 +24,7 @@ Nitro's build output is self-contained, so the image only needs a runtime and
 ```sh
 deno task build
 docker build -t fu-todo .
-docker run -p 1337:1337 -v fu-todo-data:/data fu-todo
+docker run -p 127.0.0.1:1337:1337 -v fu-todo-data:/data fu-todo
 ```
 
 Or with compose, which sets up the named volume for you:
@@ -36,12 +36,22 @@ deno task build && docker compose up --build
 The SQLite file lives on the `/data` volume so todos survive a redeploy. The
 image runs as the unprivileged `deno` user and has a healthcheck on `/healthz`.
 
+**There is no authentication.** One list, no accounts — anyone who can reach
+the port can read, add, toggle and delete every todo on it. That is the app,
+not an oversight, so both the compose file and the `docker run` line above
+publish the port on loopback only. Put a proxy in front before you widen that,
+and let the proxy do the TLS, the auth and the rate limiting: `middleware/`
+guards what a browser can be made to do to the app, not what a client is
+allowed to ask for.
+
 ## What it shows
 
 **Middleware** (`app.ts`, `middleware/core.ts`) — request logging with timing
-and an `X-Request-Id`, security headers, `no-store` on API and error responses,
-and a `/healthz` short-circuit. Registration order is outermost first, so the
-logger wraps everything and still sees short-circuited responses.
+and an `X-Request-Id`, security headers including a CSP with no `'unsafe-inline'`
+anywhere, a same-origin check on writes, a body-size cap, `no-store` on API and
+error responses, JSON errors under `/api/` even when the framework answers, and
+a `/healthz` short-circuit. Registration order is outermost
+first, so the logger wraps everything and still sees short-circuited responses.
 
 **An island** (`islands/TodoList.tsx`) — the whole interactive surface. It is
 server-rendered from SQLite, then hydrated. Adds, toggles and deletes are

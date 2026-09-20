@@ -1,25 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { env } from "./env.ts";
 
 export interface Todo {
   id: number;
   title: string;
   done: number;
   created_at: string;
-}
-
-/**
- * Read an env var on whichever runtime we are on. `Deno.env` does not exist on
- * Node or Bun, and this app is meant to run on all three — the framework's
- * output is portable, so the app should be too.
- */
-function env(name: string): string | undefined {
-  const g = globalThis as {
-    Deno?: { env: { get(k: string): string | undefined } };
-    process?: { env: Record<string, string | undefined> };
-  };
-  return g.Deno?.env.get(name) ?? g.process?.env?.[name];
 }
 
 const DB_PATH = env("TODO_DB") ?? "./data/todos.db";
@@ -69,14 +57,27 @@ function seed(handle: DatabaseSync): void {
 /** One connection for the process; `node:sqlite` is synchronous and reentrant. */
 export const db: DatabaseSync = open();
 
+/**
+ * Newest first, unfinished before done. Bounded: nothing stops a client from
+ * adding rows forever, and neither the page nor the JSON list should grow with
+ * them. A list this long has stopped being a todo list anyway.
+ */
+export const LIST_LIMIT = 500;
+
 export function listTodos(): Todo[] {
   return db.prepare(
-    "SELECT id, title, done, created_at FROM todos ORDER BY done, id DESC",
-  ).all() as unknown as Todo[];
+    "SELECT id, title, done, created_at FROM todos ORDER BY done, id DESC LIMIT ?",
+  ).all(LIST_LIMIT) as unknown as Todo[];
 }
 
-export function addTodo(title: string): Todo | null {
-  const clean = title.trim().slice(0, 200);
+/**
+ * Takes `unknown` because it comes straight from a JSON body. NUL goes before
+ * the emptiness check: SQLite would cut the stored title at it, so "\0" would
+ * pass as non-empty and land as "".
+ */
+export function addTodo(title: unknown): Todo | null {
+  if (typeof title !== "string") return null;
+  const clean = title.replaceAll("\0", "").trim().slice(0, 200);
   if (!clean) return null;
   const { lastInsertRowid } = db.prepare("INSERT INTO todos (title) VALUES (?)").run(clean);
   return db.prepare("SELECT id, title, done, created_at FROM todos WHERE id = ?")

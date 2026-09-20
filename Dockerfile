@@ -6,7 +6,7 @@
 #
 #   deno task build
 #   docker build -t fu-todo .
-#   docker run -p 1337:1337 -v fu-todo-data:/data fu-todo
+#   docker run -p 127.0.0.1:1337:1337 -v fu-todo-data:/data fu-todo
 #
 # Keeping the build outside the image means this Dockerfile works the same in
 # this monorepo (where the framework resolves through ../src) and in the

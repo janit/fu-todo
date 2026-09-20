@@ -1,9 +1,9 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "npm:preact@^11.0.0-rc.1",
+    "jsxImportSource": "npm:preact@^11.0.0-rc.2",
     "lib": [
       "deno.ns",
       "dom",
@@ -12,14 +12,16 @@
     ]
   },
   "imports": {
-    "@janit/fu": "npm:@janit/fu@^0.1.0",
-    "preact": "npm:preact@^11.0.0-rc.1",
-    "@preact/signals": "npm:@preact/signals@^2.11.2"
+    "@janit/fu": "npm:@janit/fu@^0.2.1",
+    "preact": "npm:preact@^11.0.0-rc.2",
+    "@preact/signals": "npm:@preact/signals@^2.11.2",
+    "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "tasks": {
-    "dev": "deno run -A npm:@janit/fu@^0.1.0/cli dev .",
-    "build": "deno run -A npm:@janit/fu@^0.1.0/cli build .",
-    "start": "PORT=1337 deno run -A .output/server/index.mjs"
+    "dev": "deno run -A npm:@janit/fu@^0.2.1/cli dev .",
+    "build": "deno run -A npm:@janit/fu@^0.2.1/cli build .",
+    "start": "PORT=1337 deno run -A .output/server/index.mjs",
+    "test": "deno test -A"
   },
   "nodeModulesDir": "auto"
 }

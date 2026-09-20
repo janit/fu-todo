@@ -3,7 +3,9 @@ services:
     build: .
     image: fu-todo
     ports:
-      - "1337:1337"
+      # Loopback: the app has no authentication, so it must not be the thing
+      # facing the internet. Drop the 127.0.0.1 once a proxy is in front.
+      - "127.0.0.1:1337:1337"
     volumes:
       # Named volume, so the SQLite database outlives the container.
       - fu-todo-data:/data
