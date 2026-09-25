@@ -74,11 +74,11 @@ nesting and `color-mix`, compiled by lightningcss.
 ## Runtimes
 
 The build output is portable, and so is the app: it runs on Deno, Node and Bun.
-Nitro picks its preset from whatever builds it, so build under Node — or set
-`NITRO_PRESET=node-server` — for an artefact that runs on all three.
+`fu build` uses Nitro's `node-server` preset whichever runtime runs it, so one
+artefact serves on all three. Set `NITRO_PRESET` to target a platform instead.
 
 ```sh
-NITRO_PRESET=node-server deno task build
+deno task build
 node .output/server/index.mjs   # or: bun / deno run -A
 ```
 

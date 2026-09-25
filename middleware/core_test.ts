@@ -152,13 +152,15 @@ Deno.test("bodyLimit leaves reads alone", async () => {
 const errorPage = (status: number) => () =>
   new Response(`<h2>${status}</h2>`, {
     status,
-    headers: { "content-type": "text/html; charset=utf-8" },
+    headers: { "content-type": "text/html; charset=utf-8", allow: "GET, HEAD, OPTIONS" },
   });
 
 Deno.test("apiJson turns the framework's error page under /api/ into JSON", async () => {
   const wrongMethod = await compose<State>([apiJson], errorPage(405))(ctx("PUT", "/api/todos"));
   assertEquals(wrongMethod.status, 405);
   assertEquals(await wrongMethod.json(), { error: "Method Not Allowed" });
+  assertEquals(wrongMethod.headers.get("content-type"), "application/json");
+  assertEquals(wrongMethod.headers.get("allow"), "GET, HEAD, OPTIONS");
 
   const unknown = await compose<State>([apiJson], errorPage(404))(ctx("GET", "/api/nope"));
   assertEquals(unknown.status, 404);

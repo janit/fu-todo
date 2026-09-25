@@ -38,7 +38,11 @@ export const apiJson: Middleware<State> = async (ctx) => {
     res.headers.get("content-type")?.startsWith("application/json")
   ) return res;
   await res.body?.cancel();
-  return Response.json({ error: statusText(res.status) }, { status: res.status });
+  // Keep what the error said besides its body: a 405's `Allow`, for one.
+  const headers = new Headers(res.headers);
+  headers.delete("content-type");
+  headers.delete("content-length");
+  return Response.json({ error: statusText(res.status) }, { status: res.status, headers });
 };
 
 /**
@@ -83,7 +87,7 @@ const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
  *
  * Not every mutating endpoint here is reachable cross-site — `POST /api/todos`
  * sends JSON and every `DELETE` is a non-safelisted method, so the browser
- * preflights them and the framework answers OPTIONS with 405. But
+ * preflights them, and the framework's OPTIONS answer carries no CORS grant. But
  * `POST /api/todos/:id` carries no body and no custom header, and `POST /`
  * takes urlencoded form data: both are simple requests, sent with no preflight
  * to refuse. Those two are why this exists.

@@ -10,9 +10,9 @@
 #
 # Keeping the build outside the image means this Dockerfile works the same in
 # this monorepo (where the framework resolves through ../src) and in the
-# standalone janit/fu-todo repo (where it resolves from JSR).
+# standalone janit/fu-todo repo (where it resolves from npm).
 
-FROM denoland/deno:2.9.6
+FROM denoland/deno:2.9.7
 
 WORKDIR /app
 
