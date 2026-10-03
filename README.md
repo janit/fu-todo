@@ -45,6 +45,13 @@ and let the proxy do the TLS, the auth and the rate limiting: `middleware/`
 guards what a browser can be made to do to the app, not what a client is
 allowed to ask for.
 
+The same-origin check on writes is that guard, and it is a header check, not a
+token: it reads `Sec-Fetch-Site`, falls back to the host in `Origin`, and lets
+through a request carrying neither, which no current browser sends for a write
+but `curl` does. With no cookies and no session there is nothing for a forged
+request to ride on, so that is enough here. An app that adds cookie
+authentication needs `SameSite` cookies or a CSRF token as well.
+
 ## What it shows
 
 **Middleware** (`app.ts`, `middleware/core.ts`) — request logging with timing
