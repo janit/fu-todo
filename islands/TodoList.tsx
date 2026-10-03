@@ -34,27 +34,33 @@ export default function TodoList({ initial }: { initial: Todo[] }) {
     }
   }
 
-  async function toggle(id: number) {
-    // Optimistic: flip locally, reconcile from the server response.
-    todos.value = todos.value.map((t) => t.id === id ? { ...t, done: t.done ? 0 : 1 } : t);
-    const res = await fetch(`/api/todos/${id}`, { method: "POST" });
-    if (!res.ok) {
-      todos.value = todos.value.map((t) => t.id === id ? { ...t, done: t.done ? 0 : 1 } : t);
+  /** Whether the request went through. Offline is a refusal too, not a rejection to leak. */
+  async function sent(path: string, method: string): Promise<boolean> {
+    try {
+      return (await fetch(path, { method })).ok;
+    } catch {
+      return false;
     }
+  }
+
+  async function toggle(id: number) {
+    // Optimistic: flip locally, flip back if the server did not take it.
+    const flip = () =>
+      todos.value = todos.value.map((t) => t.id === id ? { ...t, done: t.done ? 0 : 1 } : t);
+    flip();
+    if (!await sent(`/api/todos/${id}`, "POST")) flip();
   }
 
   async function remove(id: number) {
     const before = todos.value;
     todos.value = todos.value.filter((t) => t.id !== id);
-    const res = await fetch(`/api/todos/${id}`, { method: "DELETE" });
-    if (!res.ok) todos.value = before;
+    if (!await sent(`/api/todos/${id}`, "DELETE")) todos.value = before;
   }
 
   async function clearDone() {
     const before = todos.value;
     todos.value = todos.value.filter((t) => !t.done);
-    const res = await fetch("/api/todos", { method: "DELETE" });
-    if (!res.ok) todos.value = before;
+    if (!await sent("/api/todos", "DELETE")) todos.value = before;
   }
 
   return (

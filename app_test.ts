@@ -109,3 +109,13 @@ Deno.test("an oversized body is refused before anything parses it", async () => 
   assertEquals(res.status, 413);
   await res.body?.cancel();
 });
+
+Deno.test("a todo id is a plain decimal number, not anything Number() accepts", async () => {
+  // `0x1`, `1e0` and ` 1` all named todo 1.
+  for (const id of ["0x1", "1e0", "%201", "1.0", "-1"]) {
+    for (const method of ["POST", "DELETE"]) {
+      const res = await send(method, `/api/todos/${id}`, { headers: json });
+      assertEquals([res.status, await res.json()], [400, { error: "bad id" }], `${method} ${id}`);
+    }
+  }
+});

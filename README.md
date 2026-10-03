@@ -13,7 +13,8 @@ deno task build    # production build into .output
 deno task start    # serve the build
 ```
 
-The database is created on first write at `./data/todos.db`. Point `TODO_DB`
+The database is created at `./data/todos.db`, with five starter todos, on the
+first page or API request. Point `TODO_DB`
 somewhere else to move it.
 
 ## Deploy it
@@ -84,7 +85,7 @@ node .output/server/index.mjs   # or: bun / deno run -A
 
 ## Storage
 
-`db.ts` uses `node:sqlite`, which is built into Deno and Node 22+ — no
+`db.ts` uses `node:sqlite`, which is built into Deno, Bun and Node 22.13+ — no
 dependency, no native build step. WAL mode is on so reads do not block the
 single writer.
 
